@@ -15,16 +15,37 @@
 		{ original: "affecting my works", replacement: "affecting my work", type: "clarity", desc: "Work is typically uncountable in this context." }
 	]);
 
-	function handleCheck() {
+	async function handleCheck() {
 		if (!sourceText.trim()) return;
+
 		isChecking = true;
 		
-		setTimeout(() => {
-			correctedText = sourceText
-				.replace("writing code since 5 years", "writing code for 5 years")
-				.replace("affecting my works", "affecting my work");
+		try {
+			const response = await fetch("http://127.0.0.1:8000/grammer", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					text: sourceText
+				})
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to check grammer")
+			}
+
+			const data = await response.json();
+
+			correctedText = data.corrected_text;
+
+			suggestions = [];
+		} catch (error) {
+			console.error(error);
+			correctedText = "Error while checking grammer.";
+		} finally {
 			isChecking = false;
-		}, 800);
+		}
 	}
 
 	function applySuggestion(original, replacement) {

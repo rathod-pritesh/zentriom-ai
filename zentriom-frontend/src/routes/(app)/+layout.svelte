@@ -1,5 +1,6 @@
 <script>
 	import { page } from "$app/stores";
+	import { goto } from "$app/navigation";
 	import { appState } from "$lib/states/app.svelte.js";
 	import Sidebar from "$lib/components/shared/Sidebar.svelte";
 	import Header from "$lib/components/shared/Header.svelte";
@@ -7,19 +8,27 @@
 
 	let { children } = $props();
 
+	// Guard route: if user is not authenticated, redirect to landing page auth UI
+	$effect(() => {
+		if (!appState.user || !appState.user.name) {
+			if (typeof window !== 'undefined') {
+				goto("/?showAuth=true");
+			}
+		}
+	});
+
 	$effect(() => {
 		const path = $page.url.pathname;
 		appState.currentRoute = path;
 		const titles = {
-			"/dashboard": "Dashboard",
-			"/workspace": "AI Workspace",
+			"/dashboard": "Chat",
+			"/settings": "Settings",
 			"/grammar": "Grammar Assistant",
 			"/linkedin": "LinkedIn Generator",
 			"/code-explainer": "Code Explanation",
 			"/bug-fixer": "Bug Fix Assistant",
 			"/jobs": "Job Discovery",
-			"/history": "History",
-			"/profile": "Profile"
+			"/history": "History"
 		};
 		appState.pageTitle = titles[path] || "Zentriom AI";
 	});
