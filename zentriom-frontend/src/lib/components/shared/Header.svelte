@@ -1,6 +1,7 @@
 <script>
 	import { appState } from "$lib/states/app.svelte.js";
-	import { Menu, User, Settings } from "lucide-svelte";
+	import { authStore, logout } from "$lib/stores/auth.svelte.js";
+	import { Menu, User, Settings, LogOut } from "lucide-svelte";
 	import { Avatar, AvatarFallback } from "$lib/components/ui/avatar/index.js";
 	import {
 		DropdownMenu,
@@ -14,15 +15,14 @@
 
 	import { goto } from "$app/navigation";
 
-	function navigateProfile() {
-		goto("/profile");
+	function navigateSettings() {
+		goto("/settings");
 	}
-	const getInitials = (userName) => {
-		if (!userName) return "PR";
-		const parts = userName.trim().split(/\s+/);
-		if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-		return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-	};
+
+	function handleLogOut() {
+		logout();
+		goto('/')
+	}
 </script>
 
 <header class="flex h-16 items-center justify-between border-b border-stone-200 bg-white px-4 lg:px-6">
@@ -47,8 +47,8 @@
 		<DropdownMenu>
 			<DropdownMenuTrigger class="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#A16207]/50 select-none">
 				<Avatar class="size-9 border border-stone-200 cursor-pointer">
-					<AvatarFallback class="bg-[#A16207] text-white text-sm font-semibold font-sans">
-						{getInitials(appState.user?.name)}
+					<AvatarFallback class="bg-stone-100 text-stone-650 hover:bg-stone-200 text-sm font-semibold flex items-center justify-center">
+						<User class="size-4 shrink-0" />
 					</AvatarFallback>
 				</Avatar>
 			</DropdownMenuTrigger>
@@ -58,13 +58,14 @@
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator class="my-1 border-t border-stone-100" />
 				<DropdownMenuGroup>
-					<DropdownMenuItem onclick={navigateProfile} class="flex items-center gap-2 px-2 py-1.5 text-sm text-stone-700 hover:bg-stone-50 hover:text-stone-900 rounded-sm cursor-pointer outline-none font-sans">
-						<User class="size-4" />
-						Profile
-					</DropdownMenuItem>
-					<DropdownMenuItem onclick={navigateProfile} class="flex items-center gap-2 px-2 py-1.5 text-sm text-stone-700 hover:bg-stone-50 hover:text-stone-900 rounded-sm cursor-pointer outline-none font-sans">
+					<DropdownMenuItem onclick={navigateSettings} class="flex items-center gap-2 px-2 py-1.5 text-sm text-stone-700 hover:bg-stone-50 hover:text-stone-900 rounded-sm cursor-pointer outline-none font-sans">
 						<Settings class="size-4" />
 						Settings
+					</DropdownMenuItem>
+					<DropdownMenuSeparator class="my-1 border-t border-stone-100" />
+					<DropdownMenuItem onclick={handleLogOut} class="flex items-center gap-2 px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-sm cursor-pointer outline-none font-sans">
+						<LogOut class="size-4" />
+						Log Out
 					</DropdownMenuItem>
 				</DropdownMenuGroup>
 			</DropdownMenuContent>

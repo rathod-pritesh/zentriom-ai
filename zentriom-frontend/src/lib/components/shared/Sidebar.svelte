@@ -2,16 +2,10 @@
 	import { page } from "$app/stores";
 	import { appState } from "$lib/states/app.svelte.js";
 	import {
-		LayoutDashboard,
-		Sparkles,
-		Languages,
-		Share2,
-		Code,
-		Wrench,
-		Briefcase,
+		MessageSquare,
 		History,
+		Settings,
 		User,
-		LogOut,
 		ChevronLeft,
 		ChevronRight
 	} from "lucide-svelte";
@@ -19,15 +13,9 @@
 	let { onNavItemClick = null } = $props();
 
 	const navItems = [
-		{ name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-		{ name: "Workspace", path: "/workspace", icon: Sparkles },
-		{ name: "Grammar", path: "/grammar", icon: Languages },
-		{ name: "LinkedIn", path: "/linkedin", icon: Share2 },
-		{ name: "Code Explain", path: "/code-explainer", icon: Code },
-		{ name: "Bug Fix", path: "/bug-fixer", icon: Wrench },
-		{ name: "Jobs", path: "/jobs", icon: Briefcase },
+		{ name: "Chat", path: "/dashboard", icon: MessageSquare },
 		{ name: "History", path: "/history", icon: History },
-		{ name: "Profile", path: "/profile", icon: User }
+		{ name: "Settings", path: "/settings", icon: Settings }
 	];
 </script>
 
