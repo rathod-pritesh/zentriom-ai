@@ -1,5 +1,8 @@
 <script>
 	import { Eye, EyeOff } from "lucide-svelte";
+	import { login } from "$lib/services/auth";
+	import { setAuth } from "$lib/stores/auth.svelte";
+	import { goto } from "$app/navigation";
 
 	let email = $state("");
 	let password = $state("");
@@ -25,28 +28,47 @@
 		!email.trim() || !/\S+@\S+\.\S+/.test(email) || !password
 	);
 
-	function handleSubmit(e) {
+	async function handleSubmit(e) {
 		if (e) e.preventDefault();
-		
-		// Touch fields on submit
+
 		emailTouched = true;
 		passwordTouched = true;
+
 		successMsg = "";
 
 		if (isFormInvalid) return;
 
-		// Pure UI submission - emit values or display status
-		successMsg = `Form validated successfully. Email: ${email}. Ready for backend connection.`;
+		try {
+			const result = await login(
+				email,
+				password
+			);
+			
+			setAuth(
+				result.user,
+				result.token
+			);
+
+			goto('/dashboard');
+		}
+		
+		catch (error) {
+			console.error(error);
+
+			successMsg = 
+				error?.message || 
+				'Invalid email or password';
+		}
 	}
 </script>
 
 <form onsubmit={handleSubmit} class="space-y-4">
-	<!-- Success Banner
+	Success Banner
 	{#if successMsg}
 		<div class="p-3 bg-emerald-50 text-emerald-800 text-xs rounded-lg border border-emerald-200 font-medium">
 			{successMsg}
 		</div>
-	{/if} -->
+	{/if}
 
 	<!-- Email Field -->
 	<div class="space-y-1">
@@ -69,9 +91,9 @@
 	<div class="space-y-1">
 		<div class="flex justify-between items-center">
 			<label for="login-password" class="block text-[10px] font-bold text-stone-700 tracking-wider uppercase font-sans">Password</label>
-			<button type="button" class="text-[10px] text-[#A16207] font-semibold hover:underline outline-none cursor-pointer">
+			<a href="/forgot-password" class="text-[10px] text-[#A16207] font-semibold hover:underline outline-none cursor-pointer">
 				Forgot Password?
-			</button>
+			</a>
 		</div>
 		<div class="relative">
 			<input
