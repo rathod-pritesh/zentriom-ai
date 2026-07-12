@@ -4,6 +4,7 @@
 	import { Textarea } from "$lib/components/ui/textarea/index.js";
 	import { Badge } from "$lib/components/ui/badge/index.js";
 	import { Languages, Check, Copy, Sparkles } from "lucide-svelte";
+	import { getAuthHeaders } from "$lib/services/auth";
 
 	let sourceText = $state("I have been writing code since 5 years and it is affecting my works.");
 	let correctedText = $state("");
@@ -23,9 +24,7 @@
 		try {
 			const response = await fetch("http://127.0.0.1:8000/grammer", {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
+				headers: getAuthHeaders(),
 				body: JSON.stringify({
 					text: sourceText
 				})

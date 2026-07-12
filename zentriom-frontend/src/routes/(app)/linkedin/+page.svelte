@@ -11,6 +11,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Share2, Copy, Check, Sparkles } from 'lucide-svelte';
+	import { getAuthHeaders } from '$lib/services/auth';
 
 	let postType = $state('Certificate');
 	const postTypes = [
@@ -43,9 +44,7 @@
 		try {
 			const response = await fetch('http://127.0.0.1:8000/linkedin', {
 				method: 'POST',
-				headers: {
-				'Content-Type': 'application/json'
-				},
+				headers: getAuthHeaders(),
 				body: JSON.stringify({
 					post_type: postType,
 					topic,
