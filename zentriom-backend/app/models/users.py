@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String
 
+from sqlalchemy.orm import relationship
+
 from app.db.database import Base
 
 class User(Base):
@@ -16,3 +18,9 @@ class User(Base):
     picture = Column(String, nullable=True)
 
     password_hash = Column(String, nullable=True)
+    
+    history = relationship(
+        "AIHistory",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
