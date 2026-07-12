@@ -1,32 +1,34 @@
 <script>
-	import { Eye, EyeOff } from "lucide-svelte";
-	import { login } from "$lib/services/auth";
-	import { setAuth } from "$lib/stores/auth.svelte";
-	import { goto } from "$app/navigation";
+	import { Eye, EyeOff } from 'lucide-svelte';
+	import { login } from '$lib/services/auth';
+	import { setAuth } from '$lib/stores/auth.svelte';
+	import { goto } from '$app/navigation';
+	import { toast } from 'svelte-sonner';
 
-	let email = $state("");
-	let password = $state("");
+	let email = $state('');
+	let password = $state('');
 	let showPassword = $state(false);
-	
+
 	// Validation / UI States
 	let emailTouched = $state(false);
 	let passwordTouched = $state(false);
-	let successMsg = $state("");
 
 	// Derived inline validation messages
 	const emailErrorMsg = $derived(
 		!email.trim()
-			? (emailTouched ? "Email address is required" : "")
-			: (!/\S+@\S+\.\S+/.test(email) ? "Please enter a valid email address" : "")
-	);
-	
-	const passwordErrorMsg = $derived(
-		!password ? (passwordTouched ? "Password is required" : "") : ""
+			? emailTouched
+				? 'Email address is required'
+				: ''
+			: !/\S+@\S+\.\S+/.test(email)
+				? 'Please enter a valid email address'
+				: ''
 	);
 
-	const isFormInvalid = $derived(
-		!email.trim() || !/\S+@\S+\.\S+/.test(email) || !password
+	const passwordErrorMsg = $derived(
+		!password ? (passwordTouched ? 'Password is required' : '') : ''
 	);
+
+	const isFormInvalid = $derived(!email.trim() || !/\S+@\S+\.\S+/.test(email) || !password);
 
 	async function handleSubmit(e) {
 		if (e) e.preventDefault();
@@ -34,50 +36,37 @@
 		emailTouched = true;
 		passwordTouched = true;
 
-		successMsg = "";
-
 		if (isFormInvalid) return;
 
 		try {
-			const result = await login(
-				email,
-				password
-			);
-			
-			setAuth(
-				result.user,
-				result.token
-			);
+			const result = await login(email, password);
+
+			setAuth(result.user, result.token);
+
+			toast.success('Logged in Successful!');
 
 			goto('/dashboard');
-		}
-		
-		catch (error) {
-			console.error(error);
 
-			successMsg = 
-				error?.message || 
-				'Invalid email or password';
+		} catch (error) {
+			toast.error('Invalid email or password');
 		}
 	}
 </script>
 
 <form onsubmit={handleSubmit} class="space-y-4">
-	Success Banner
-	{#if successMsg}
-		<div class="p-3 bg-emerald-50 text-emerald-800 text-xs rounded-lg border border-emerald-200 font-medium">
-			{successMsg}
-		</div>
-	{/if}
-
+	
 	<!-- Email Field -->
 	<div class="space-y-1">
-		<label for="login-email" class="block text-[10px] font-bold text-stone-700 tracking-wider uppercase font-sans">Email Address</label>
+		<label
+			for="login-email"
+			class="block text-[10px] font-bold text-stone-700 tracking-wider uppercase font-sans"
+			>Email Address</label
+		>
 		<input
 			id="login-email"
 			type="email"
 			bind:value={email}
-			onblur={() => emailTouched = true}
+			onblur={() => (emailTouched = true)}
 			placeholder="e.g. pritesh@example.com"
 			class="w-full h-10 px-3 rounded-lg border bg-[#FDFCFB] text-stone-900 placeholder-stone-400 focus:outline-hidden focus:border-[#A16207] focus:ring-1 focus:ring-[#A16207]/30 transition-all font-sans text-xs
 				{emailErrorMsg ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : 'border-stone-200'}"
@@ -90,24 +79,33 @@
 	<!-- Password Field -->
 	<div class="space-y-1">
 		<div class="flex justify-between items-center">
-			<label for="login-password" class="block text-[10px] font-bold text-stone-700 tracking-wider uppercase font-sans">Password</label>
-			<a href="/forgot-password" class="text-[10px] text-[#A16207] font-semibold hover:underline outline-none cursor-pointer">
+			<label
+				for="login-password"
+				class="block text-[10px] font-bold text-stone-700 tracking-wider uppercase font-sans"
+				>Password</label
+			>
+			<a
+				href="/forgot-password"
+				class="text-[10px] text-[#A16207] font-semibold hover:underline outline-none cursor-pointer"
+			>
 				Forgot Password?
 			</a>
 		</div>
 		<div class="relative">
 			<input
 				id="login-password"
-				type={showPassword ? "text" : "password"}
+				type={showPassword ? 'text' : 'password'}
 				bind:value={password}
-				onblur={() => passwordTouched = true}
+				onblur={() => (passwordTouched = true)}
 				placeholder="••••••••"
 				class="w-full h-10 pl-3 pr-10 rounded-lg border bg-[#FDFCFB] text-stone-900 placeholder-stone-400 focus:outline-hidden focus:border-[#A16207] focus:ring-1 focus:ring-[#A16207]/30 transition-all font-sans text-xs
-					{passwordErrorMsg ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : 'border-stone-200'}"
+					{passwordErrorMsg
+					? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+					: 'border-stone-200'}"
 			/>
 			<button
 				type="button"
-				onclick={() => showPassword = !showPassword}
+				onclick={() => (showPassword = !showPassword)}
 				class="absolute right-3 top-3 text-stone-450 hover:text-stone-700 outline-none cursor-pointer"
 			>
 				{#if showPassword}

@@ -3,6 +3,7 @@
 	import { register } from '$lib/services/auth';
 	import { setAuth } from '$lib/stores/auth.svelte';
 	import { goto } from '$app/navigation';
+	import { toast } from 'svelte-sonner';
 
 	let fullName = $state('');
 	let email = $state('');
@@ -15,7 +16,6 @@
 	let emailTouched = $state(false);
 	let passwordTouched = $state(false);
 	let confirmTouched = $state(false);
-	let successMsg = $state('');
 
 	// Derived validation messages
 	const nameErrorMsg = $derived(
@@ -56,37 +56,23 @@
 		passwordTouched = true;
 		confirmTouched = true;
 
-		successMsg = '';
-
 		if (isFormInvalid) return;
 
-		console.log(fullName);
-		console.log(email);
-		console.log(password);
-		console.log(password.length);
 		try {
 			const result = await register(fullName, email, password);
 
 			setAuth(result.user, result.token);
 
+			toast.success('Account created successfully');
+
 			goto('/dashboard');
 		} catch (error) {
-			console.error(error);
-
-			successMsg = error?.message || 'Registration failed';
+			toast.error('Registration failed!');
 		}
 	}
 </script>
 
 <form onsubmit={handleSubmit} class="space-y-4">
-	Success Banner
-	{#if successMsg}
-		<div
-			class="p-3 bg-emerald-50 text-emerald-800 text-xs rounded-lg border border-emerald-250 font-medium"
-		>
-			{successMsg}
-		</div>
-	{/if}
 
 	<!-- Full Name Field -->
 	<div class="space-y-1">
