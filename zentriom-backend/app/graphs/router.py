@@ -8,4 +8,7 @@ def router(state):
     if task == "linkedin":
         return "linkedin"
     
+    if task == "code_explainer":
+        return "code_explainer"
+    
     return "chat"

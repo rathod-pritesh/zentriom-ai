@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-class AIState(TypedDict):
+class AIState(TypedDict, total=False):
     task: str
     prompt: str
     
@@ -9,5 +9,8 @@ class AIState(TypedDict):
     experience: str
     tone: str
     length: str
+    
+    code: str
+    language: str
     
     result: str
