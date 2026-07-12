@@ -1,5 +1,5 @@
-from ibm_watsonx_ai import Credentials
-from ibm_watsonx_ai.foundation_models import ModelInference
+from langchain_ibm import ChatWatsonx
+from fastapi import HTTPException
 
 from app.core.config import (
     API_KEY,
@@ -8,20 +8,18 @@ from app.core.config import (
     MODEL_ID
 )
 
-credentials = Credentials(
+llm = ChatWatsonx(
+    model_id=MODEL_ID,
     url=URL,
-    api_key=API_KEY
+    apikey=API_KEY,
+    project_id=PROJECT_ID,
+    params={
+        "temperature": 0.5,
+        "max_new_tokens": 600
+    }
 )
 
-
-def ask_granite(prompt: str):
-    model = ModelInference(
-        model_id=MODEL_ID,
-        credentials=credentials,
-        project_id=PROJECT_ID
-    )
-    
-    full_prompt = f"""
+SYSTEM_PROMPT = """
 You are Zentriom AI.
 
 You are a helpful AI assistant for:
@@ -38,18 +36,31 @@ Rules:
 - If the user says "hi", "hello", or similar greetings, greet them naturally.
 - Never output random multilingual text.
 - Be concise and professional.
+"""
+
+
+def ask_granite(prompt: str):
+    
+    full_prompt = f"""
+{SYSTEM_PROMPT}
 
 User: {prompt}
 
 Assistant:
 """
-    response = model.generate_text(
-        prompt=full_prompt,
-        params={
-            "max_new_tokens": 400,
-            "temperature": 0.5,
-            "stop_sequences": ["###"]
-        }
-    )
-
-    return response
+    try:
+        response = llm.invoke(prompt)
+        return response.content
+    
+    except Exception as e:
+        
+        if "429" in str(e):
+            raise HTTPException(
+                status_code=503,
+                detail='AI service is currently busy. Please try again shortly.'
+            )
+            
+        raise HTTPException(
+            status_code=500,
+            detail='An unexpected error occurred. Please try again.'
+        )
