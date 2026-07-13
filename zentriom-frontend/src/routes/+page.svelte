@@ -391,16 +391,21 @@
 	<section id="how-it-works" class="py-20 px-4 sm:px-6 lg:px-8 border-t border-border">
 		<div class="max-w-7xl mx-auto space-y-12">
 			<div class="text-center max-w-xl mx-auto space-y-2">
-				<h2 class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">How It Works</h2>
-				<p class="text-muted-foreground text-xs sm:text-sm">
+				<h2 class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl font-sans">How It Works</h2>
+				<p class="text-zinc-300 text-xs sm:text-sm font-sans">
 					Seamless workflow routing designed for single-user workspaces.
 				</p>
 			</div>
-			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
 				{#each steps as step}
-					<div class="relative border border-border bg-card rounded-xl p-6 shadow-2xs">
-						<span class="text-3xl font-extrabold text-[#C2410C]/20 block mb-2">{step.step}</span>
-						<h3 class="text-sm font-bold text-foreground mb-1">{step.title}</h3>
+					<div class="relative border border-border/80 hover:border-[#A16207]/30 bg-card rounded-2xl p-6 shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 ease-out group">
+						{#if step.step !== '04'}
+							<div class="hidden lg:block absolute top-[3.25rem] left-full w-6 border-t border-dashed border-border/80 z-20"></div>
+						{/if}
+						<div class="relative w-14 h-14 flex items-center justify-center rounded-2xl bg-[#A16207]/10 border border-[#A16207]/20 mb-5 shadow-[0_0_15px_-3px_rgba(161,98,7,0.1)] transition-colors duration-300 group-hover:bg-[#A16207]/15 group-hover:border-[#A16207]/35 select-none">
+							<span class="text-2xl font-black text-[#A16207] tracking-tight font-sans">{step.step}</span>
+						</div>
+						<h3 class="text-sm font-extrabold text-foreground tracking-tight mb-1.5 font-sans">{step.title}</h3>
 						<p class="text-muted-foreground text-xs leading-relaxed font-sans">{step.desc}</p>
 					</div>
 				{/each}
