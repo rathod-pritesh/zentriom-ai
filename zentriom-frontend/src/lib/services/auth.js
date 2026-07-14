@@ -22,8 +22,6 @@ export function getAuthHeaders() {
 }
 
 export async function loginWithGoogle(idToken) {
-	console.log('Sending token to backend');
-	console.log(idToken.substring(0, 50));
 
 	const response = await fetch(`${API_URL}/auth/google`, {
 		method: 'POST',

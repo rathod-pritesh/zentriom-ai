@@ -5,7 +5,6 @@ export function initGoogleLogin(callback, buttonElementId) {
 
 	const checkAndInit = () => {
 		if (!window.google || !window.google.accounts || !window.google.accounts.id) {
-			// Check again in 50ms if script is still loading
 			setTimeout(checkAndInit, 50);
 			return;
 		}
