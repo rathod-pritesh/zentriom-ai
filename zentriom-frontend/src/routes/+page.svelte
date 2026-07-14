@@ -70,9 +70,15 @@
 			try {
 				const result = await loginWithGoogle(response.credential);
 				setAuth(result.user, result.token);
+				toast.success("Signed in with Google.");
 				goto('/dashboard');
 			} catch (error) {
 				console.error('Google login verification failed:', error);
+				if (error.message && error.message.includes('registered with another account')) {
+					toast.info("This email is already registered with password login. Please sign in using your password or reset your password if needed.");
+				} else {
+					toast.error(error.message || "Unable to sign in with Google.");
+				}
 			}
 		}, 'google-signin-button');
 	});
@@ -240,6 +246,13 @@
 	];
 </script>
 
+<svelte:head>
+	<title>Zentriom AI Powered Productivity and Career Assistant</title>
+	<meta name="description" content="Zentriom AI Powered Productivity and Career Assistant is an intelligent workspace powered by IBM Granite and LangGraph." />
+	<meta property="og:title" content="Zentriom AI Powered Productivity and Career Assistant" />
+	<meta property="og:description" content="An intelligent workspace powered by IBM Granite and LangGraph that helps students, developers, and professionals write better, understand code, fix bugs, create content, and discover career opportunities." />
+</svelte:head>
+
 <div
 	class="min-h-screen bg-background text-foreground font-sans selection:bg-[#A16207]/20 selection:text-[#A16207]"
 >
@@ -371,7 +384,7 @@
 			<h1
 				class="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl font-sans"
 			>
-				Zentriom - AI Productivity &amp; Career Copilot
+				Zentriom AI Powered Productivity and Career Assistant
 			</h1>
 			<p
 				class="max-w-2xl mx-auto text-muted-foreground text-base sm:text-lg leading-relaxed font-sans"

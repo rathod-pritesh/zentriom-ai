@@ -71,10 +71,14 @@
 		isSendingOtp = true;
 		try {
 			await sendSignupOtp(fullName, email);
-			toast.success('Verification code sent.');
+			toast.success("Verification code sent to your email.");
 			signupState = 'otp';
 		} catch (error) {
-			toast.error(error.message || 'Unable to send verification code.');
+			if (error.message && (error.message.includes('already registered') || error.message.includes('registered') || error.message.includes('exists'))) {
+				toast.error("This email is already registered. Please sign in instead.");
+			} else {
+				toast.error("Unable to complete registration.");
+			}
 		} finally {
 			isSendingOtp = false;
 		}
@@ -103,10 +107,14 @@
 		isVerifyingOtp = true;
 		try {
 			await verifySignupOtp(email, otpValues.join(''));
-			toast.success('Email verified successfully.');
+			toast.success("Email verified successfully.");
 			signupState = 'verified';
 		} catch (error) {
-			toast.error(error.message || 'Invalid verification code.');
+			if (error.message && (error.message.includes('expired') || error.message.includes('Expired'))) {
+				toast.error("Verification code has expired.");
+			} else {
+				toast.error("Invalid verification code.");
+			}
 		} finally {
 			isVerifyingOtp = false;
 		}
@@ -122,10 +130,14 @@
 		try {
 			const result = await register(fullName, email, password);
 			setAuth(result.user, result.token);
-			toast.success('Account created successfully.');
+			toast.success("Account created successfully.");
 			goto('/dashboard');
 		} catch (error) {
-			toast.error(error.message || 'Registration failed.');
+			if (error.message && (error.message.includes('already registered') || error.message.includes('registered') || error.message.includes('exists'))) {
+				toast.error("This email is already registered. Please sign in instead.");
+			} else {
+				toast.error("Unable to complete registration.");
+			}
 		} finally {
 			isRegistering = false;
 		}

@@ -47,7 +47,11 @@
 
 			goto('/dashboard');
 		} catch (error) {
-			toast.error(error.message || 'Invalid email or password');
+			if (error.message === 'Invalid email or password') {
+				toast.error('Invalid email or password.');
+			} else {
+				toast.error('Unable to sign in. Please try again.');
+			}
 		}
 	}
 </script>

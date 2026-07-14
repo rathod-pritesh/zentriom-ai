@@ -50,14 +50,18 @@
 			sessionStorage.removeItem('reset_otp');
 
 			successMessage = 'Password changed successfully';
-			toast.success('Password updated successfully.');
+			toast.success("Password updated successfully. Please sign in with your new password.");
 
 			setTimeout(() => {
 				goto('/?showAuth=true');
 			}, 1500);
 		} catch (error) {
 			errorMessage = error.message;
-			toast.error(error.message || 'Password reset failed.');
+			if (error.message === 'Session expired. Start again.') {
+				toast.error(error.message);
+			} else {
+				toast.error("Unable to reset password.");
+			}
 		}
 	}
 </script>

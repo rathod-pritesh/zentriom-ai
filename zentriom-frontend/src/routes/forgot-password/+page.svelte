@@ -33,6 +33,7 @@
 			await forgotPassword(email);
 
 			otpSent = true;
+			toast.success("Verification code sent to your email.");
 		} catch (error) {
 			errorMessage = error.message;
 			toast.error(error.message || 'Failed to send OTP.');
@@ -70,10 +71,16 @@
 
 			sessionStorage.setItem('reset_otp', otp);
 
+			toast.success("OTP verified successfully.");
+
 			goto('/reset-password');
 		} catch (error) {
 			errorMessage = error.message;
-			toast.error(error.message || 'OTP verification failed.');
+			if (error.message && (error.message.includes('expired') || error.message.includes('Expired'))) {
+				toast.error("Verification code has expired.");
+			} else {
+				toast.error("Invalid verification code.");
+			}
 		}
 	}
 </script>
