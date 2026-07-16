@@ -2,6 +2,8 @@
 
 Live app: https://zentriom-ai.vercel.app/
 
+Documentation: https://docs.google.com/presentation/d/1_t6SvNJCtT6R6b2mhWIAreuT6Ju7EY4X/edit?usp=sharing&ouid=117562435363487762619&rtpof=true&sd=true
+
 I built Zentriom because I kept doing the same thing every week: fix grammar in one app, write a LinkedIn post in another tab, paste confusing code into a third tool just to understand what it was doing. None of these tools know about each other. Switching between them breaks your focus more than people admit. Zentriom puts the tools I actually use, grammar correction, LinkedIn post writing, and code explanation, behind one dashboard, plus a general chat option for anything that doesn't fit those three.
 
 ## What actually works right now
